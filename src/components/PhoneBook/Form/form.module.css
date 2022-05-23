@@ -1,0 +1,14 @@
+form{
+    border: solid 1px black;
+    height: 100px;
+    width: 300px;
+    padding: 20px;
+};
+
+.input{
+    margin-bottom: 20px;
+}
+
+.click{
+    margin-top: 10px;
+}
