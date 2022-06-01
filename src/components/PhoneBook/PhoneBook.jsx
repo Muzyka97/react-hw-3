@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { nanoid } from 'nanoid';
 
@@ -8,77 +8,87 @@ import PropTypes from 'prop-types';
 import Form from './Form';
 import ContactList from '../ContactList';
 
-const PhoneBook = () =>{
-    const [contacts, setContacts] = useState([]);
-    const [filter, setFilter] = useState("");
+const PhoneBook = () => {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
 
-    const firstRender = useRef(true);
+  const firstRender = useRef(true);
 
-    useEffect(() => {
-        if(firstRender.current){
-            const data = localStorage.getItem("contacts");
-            const contacts = JSON.parse(data);
-            if(data?.length){
-                setContacts(contacts)
-            }
-            firstRender.current = false;
-        }
-    }, []);
-    useEffect=(() => {
-        if(!firstRender.current){
-            localStorage.setItem("contacts", JSON.stringify(contacts))
-        }
-    },[contacts])
-
-    const addContact = (data) =>{
-        const dublicate = contacts.find(contact => contact.name === data.name);
-        if(dublicate){
-            alert(`${data.name} is already in name list`);
-            return;
-        }
-        setContacts(prevState => {
-            const {name, number} = data;
-            const newContact ={
-                name,
-                number,
-                id: nanoid()
-            };
-            return [...prevState, newContact];
-        });
+  useEffect(() => {
+    if (firstRender.current) {
+      const data = localStorage.getItem('contacts');
+      const contacts = JSON.parse(data);
+      if (data?.length) {
+        setContacts(contacts);
+      }
+      firstRender.current = false;
     }
+  }, []);
+  useEffect(() => {
+    if (!firstRender.current) {
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+    }
+  }, [contacts]);
 
-    const deleteContact = id => {
-        setContacts(prevState => contacts.filter(contact => contact.id !== id));
-    };
-
-    const changeFilter = ({target}) => setFilter(target.value);
-
-    const filterText = filter.toLocaleLowerCase();
-    const filteredContacts = contacts.filter(({name}) =>{
-        const result = name.toLocaleLowerCase().includes(filterText)
-        return result;
+  const addContact = data => {
+    const dublicate = contacts.find(contact => contact.name === data.name);
+    if (dublicate) {
+      alert(`${data.name} is already in name list`);
+      return;
+    }
+    setContacts(prevState => {
+      const { name, number } = data;
+      const newContact = {
+        name,
+        number,
+        id: nanoid(),
+      };
+      return [...prevState, newContact];
     });
+  };
 
-        return(
-        <div className={styles.container}>
-            <div className={styles.contForm}>
-            <h1>Phonebook</h1>
-            <Form onSubmit={addContact}/>
-            </div> 
-        <div className={styles.container}>
-            <h2>Contacts</h2>
-                <label htmlFor="name">Find contacts by name:</label> <br/>
-                <input className={styles.find}onChange={ changeFilter } value={filter} type="text" name="filter" placeholder="Filter"/>
-                <ContactList contacts={contacts} deleteContact={deleteContact}/>
-            </div>
-        </div>
-    );
-}
+  const deleteContact = id => {
+    setContacts(prevState => contacts.filter(contact => contact.id !== id));
+  };
+
+  const changeFilter = ({ target }) => setFilter(target.value);
+
+  const filterText = filter.toLocaleLowerCase();
+  const filteredContacts = contacts.filter(({ name }) => {
+    const result = name.toLocaleLowerCase().includes(filterText);
+    return result;
+  });
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.contForm}>
+        <h1>Phonebook</h1>
+        <Form onSubmit={addContact} />
+      </div>
+      <div className={styles.container}>
+        <h2>Contacts</h2>
+        <label htmlFor="name">Find contacts by name:</label> <br />
+        <input
+          className={styles.find}
+          onChange={changeFilter}
+          value={filter}
+          type="text"
+          name="filter"
+          placeholder="Filter"
+        />
+        <ContactList
+          contacts={filteredContacts}
+          deleteContact={deleteContact}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default PhoneBook;
 
-PhoneBook.protoType ={
-    filter: PropTypes.string.isRequired
+PhoneBook.protoType = {
+  filter: PropTypes.string.isRequired,
 };
 // class PhoneBook extends Component {
 //     state = {
@@ -156,7 +166,7 @@ PhoneBook.protoType ={
 //                 <div className={styles.contForm}>
 //                 <h1>Phonebook</h1>
 //                 <Form onSubmit={addContact}/>
-//                 </div> 
+//                 </div>
 //             <div className={styles.container}>
 //                 <h2>Contacts</h2>
 //                     <label htmlFor="name">Find contacts by name:</label> <br/>
